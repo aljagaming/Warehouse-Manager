@@ -7,9 +7,14 @@ require('dotenv').config();
 const app = express();
 
 
+
 //routes
 const user = require("./Rutes/user");
 const item = require("./Rutes/item");
+const location = require("./Rutes/location");
+const myClass = require("./Rutes/class")
+
+const path = require('path');
 
 
 
@@ -48,6 +53,9 @@ console.log(`Server is running on port: ${process.env.PORT || port}`)
 
 app.use('/user', user);
 app.use('/item', item);
+app.use('/location', location);
+app.use('/class', myClass);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
