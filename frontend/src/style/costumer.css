@@ -1,0 +1,342 @@
+/* reset.css */
+.costumer {
+    width: 100vw; 
+    height: 100vh;
+    
+}
+
+.costumer .costumerHeader{
+    
+    text-align: center;
+}
+
+.costumer .costumerHeader::before {
+    content: "Welcome to: ";
+
+}
+
+.costumer .searchBar {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;          
+    flex-direction: row;          
+    max-width: 100%;
+    width: 100%;
+
+    padding: 0px 15px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+    gap: 10px; 
+}
+
+.costumer input[type="text"],
+.costumer .logOutButton {
+    height: 40px;                 
+    border: 2px solid #333;       
+    border-radius: 20px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    padding: 0 12px;
+    margin: 0;                   
+}
+
+.costumer input[type="text"] {
+    flex: 1;                  
+}
+
+.costumer input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.costumer .logOutButton {
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.costumer .logOutButton:hover {
+    background-color: #d14545;
+    color: white;
+}
+
+.costumer .logOutButton:active {
+    background-color: #b12c2c;
+}
+
+.display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    justify-content: flex-start;
+}
+
+.display .displayButton {
+    padding: 0px;
+    display: flex;
+    align-items: center; /* aligns children to the top */
+    justify-content: center; /* aligns children to the left */
+    flex-direction: row;
+    flex: 0 0 calc((100% - 30px) / 4); 
+    height: 200px;
+    border: 2px solid #333;
+    border-radius: 20px;
+    background-color: white;
+    box-sizing: border-box;
+    position: relative;
+}
+.display .displayButton:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.display .displayButton .itemPicture {
+    width: 50%;
+    height: calc((100% - 20px)); 
+    border: 2px solid;
+    border-radius: 20px;
+    margin: 10px;
+    
+}
+.display .displayButton .itemPicture img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit:contain;
+}
+
+
+.display .displayButton .itemText {
+    margin-top:10px;
+    margin-bottom:10px;
+    font-size: 15px;
+    font-weight: bold;
+}
+.display .displayButton .itemName,
+.display .displayButton .itemPrice,
+.display .displayButton .itemQuantity,
+.display .displayButton .itemClass {
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.display .displayButton .itemName {
+    font-weight: bold;
+    font-size: 1.5rem;
+    
+}
+
+.display .displayButton:hover .itemPicture {
+    background-color: white;
+}
+
+.display .displayButton .itemPrice::before  {
+    content: "Price: "; 
+}
+.display .displayButton .itemPrice::after  {
+    content: "€"; 
+}
+
+.display .displayButton .itemQuantity::before {
+    content: "Avaliable: "; 
+}
+
+.display .displayButton .itemClass::before {
+    content: "Class: "; 
+}
+
+.displayClasses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    justify-content: center;    /* center horizontally */
+    align-items: center;        /* center vertically */
+}
+
+.oneClassButton:hover {
+    background-color: #f0f0f0;
+}
+
+.class-button.selected {
+  border-color: blue;
+  background-color: #e0f0ff;
+}
+
+.oneClassButton{
+    width: auto;
+    height: auto;
+    padding: 10px;
+    border: 2px solid #333;
+    border-radius: 20px;
+    background-color: white;
+    box-sizing: border-box;
+    
+}
+
+
+
+/* -------------------------------------------------------------------------------- */
+
+
+
+
+
+.itemDetailPage {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100vh;
+    background-color: #f0f0f0;
+    
+}
+
+
+.itemDetailPage .itemDetailImageContainer {
+    margin-top: 60px;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.itemDetailPage .itemDetailImageContainerBorder {
+    width: 30vw;      /* Half the viewport width */
+  height: 30vw;
+    aspect-ratio: 1 / 1;
+    
+    border: black 2px solid;
+    border-radius: 20px;
+    margin: 20px;
+    background-color: white;
+}
+
+.itemDetailPage .itemDetailImageContainer img{
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit:contain;
+}
+
+
+
+
+.itemDetailPage .itemDetailInfoContainer {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #333;
+
+}
+.itemDetailPage .itemDetailHeader {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    width: 100%;
+    color: black;
+
+}
+
+
+.itemDetailPage  .itemDetailPrice::before  {
+    content: "Price: "; 
+}
+.itemDetailPage  .itemDetailPrice::after  {
+    content: "€"; 
+}
+
+.itemDetailPage .itemDetailAvailable::before {
+    content: "Avaliable: "; 
+}
+
+.itemDetailPage .itemDetailDesc::before {
+    content: "Description: "; 
+}
+
+.itemDetailPage .itemDetailDimensions::before {
+    content: "Dimensions: "; 
+}
+.itemDetailPage  .itemDetailClass::before {
+    content: "Class: "; 
+}
+.itemDetailPage  .goBackButton {
+    position: absolute;
+    right: 30px;      /* distance from right edge */
+    bottom: 30px;
+    width: 15%;
+    height: 50px;
+    border: 2px solid #333;
+    border-radius: 20px;
+    background-color: white;
+}
+.itemDetailPage  .goBackButton:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.itemDetailPage  .itemDetailArticleNumber::before {
+    content: "Article Number: "; 
+}
+
+.itemDetailPage  .itemDetailBarcode::before {
+    content: "Barcode - EAN : "; 
+}
+
+
+.itemDetailPage  .itemDetailPosition::before {
+    content: "Class Position: "; 
+}
+
+
+/*-----------------------------------------------------------------------------*/
+
+
+.itemDetailPage  .employeeMenue {
+    display: flex;
+    float: left;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    gap: 3px;   
+}
+
+.itemDetailPage  .employeeMenuButton {
+    font-size: 1.1em;
+    font-weight: 700;
+    width: 60%;
+    height: 35px;
+    border: 2px solid black; 
+    border-radius: 25px;
+    background-color: rgb(207, 237, 255);
+    color: #003d66;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.itemDetailPage  .employeeMenuButton:hover {
+    background-color: #56a5d6;  
+    color: white;
+}
+
+.itemDetailPage .employeeMenuButton:active {
+    background-color: #004466; 
+    border-color: #003353;
+}
+
+
+

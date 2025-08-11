@@ -1,0 +1,57 @@
+.generalContainer {
+    position: absolute;
+    top: 50%;            
+    left: 50%;           
+    transform: translate(-50%, -50%); 
+    z-index: 9999;        
+    background-color: #fff; 
+    padding: 25px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15); /* softer, deeper shadow */
+    border-radius: 12px; /* smoother corners */
+    border: 1px solid #ddd; /* lighter border for modern feel */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.generalContainer .generalForm {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center;    
+    gap: 12px;              
+    width: 240px;
+}
+
+.generalContainer .generalInput {
+    width: 100%;
+    height: 35px;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.generalContainer .generalInput:focus {
+    border-color: #4a90e2; /* focus highlight */
+    box-shadow: 0 0 4px rgba(74,144,226,0.4);
+}
+
+.generalSubmitButton {
+    width: 100%;
+    height: 36px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.generalSubmitButton:hover {
+    background-color: #357ABD;
+}
+
+.generalSubmitButton:active {
+    transform: scale(0.98);
+}

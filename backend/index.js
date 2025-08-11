@@ -17,6 +17,17 @@ const myClass = require("./Rutes/class")
 const path = require('path');
 
 
+app.use(express.urlencoded({extended : true}));
+app.use(cors({
+   origin: 'http://88.200.63.148:4073',
+   methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+   credentials: true
+}))
+
+
+// Serve static files from the "uploads" directory so you can access images.
+app.use('/uploads', express.static('uploads'));
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // If you're accepting JSON too
@@ -32,14 +43,6 @@ app.use(session({
 }))
 
 
-
-
-app.use(express.urlencoded({extended : true}));
-app.use(cors({
-   origin: 'http://localhost:3000',
-   methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
-   credentials: true
-}))
 
 
 

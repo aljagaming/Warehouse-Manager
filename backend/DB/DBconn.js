@@ -45,7 +45,7 @@ data.getAllUsers = () => {
 
 data.registerUser = (user_name, user_lastname, user_email, user_password) => {
 
-    const arr = [user_name, user_lastname, user_email, user_password, "customer"];
+    const arr = [user_name, user_lastname, user_email, user_password, "costumer"];
 
     return new Promise((resolve, reject) => {
         conn.query('INSERT INTO User (user_name,user_lastname,user_email, user_password, user_role) VALUES (?, ?, ?, ?, ?)', arr, (err, res, fields) => {
@@ -106,9 +106,129 @@ data.getAllLocation = () => {
     });
 }
 
+//returns all ids of the classes 
 data.locationGetAllClasses = (location_id) => {
     return new Promise((resolve, reject) => {
         conn.query("SELECT class_id FROM ClassLocation WHERE location_id=?", [location_id], (err, res, fields) => {
+            if (err) { return reject(err); }
+            return resolve(res);
+        });
+    });
+}
+
+//if you have item id that can return you class detaiils
+//from location you can get inventory details 
+
+data.getAllItemsInLocation = (location_id, class_id, nameLike) => {
+
+    if (class_id && nameLike && nameLike.trim() !== "") {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT 
+                    Item.*, 
+                    ItemClass.*, 
+                    Class.*,
+                    Inventory.item_quantity
+                FROM Inventory
+                JOIN Item ON Item.item_id = Inventory.item_id
+                JOIN ItemClass ON ItemClass.item_id = Item.item_id
+                JOIN Class ON Class.class_id = ItemClass.class_id
+                WHERE Inventory.location_id = ? AND Class.class_id = ? AND Item.item_name LIKE ?
+            `;
+            conn.query(query, [location_id, class_id, `%${nameLike}%`], (err, res, fields) => {
+                if (err) { return reject(err); }
+                return resolve(res);
+            });
+        });
+
+
+    } else if (class_id && !nameLike) {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT 
+                    Item.*, 
+                    ItemClass.*, 
+                    Class.*,
+                    Inventory.item_quantity
+                FROM Inventory
+                JOIN Item ON Item.item_id = Inventory.item_id
+                JOIN ItemClass ON ItemClass.item_id = Item.item_id
+                JOIN Class ON Class.class_id = ItemClass.class_id
+                WHERE Inventory.location_id = ? AND Class.class_id = ?
+            `;
+            conn.query(query, [location_id, class_id], (err, res, fields) => {
+                if (err) { return reject(err); }
+                return resolve(res);
+            });
+        });
+
+    } else if (!class_id && nameLike && nameLike.trim() !== "") {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT 
+                    Item.*, 
+                    ItemClass.*, 
+                    Class.*,
+                    Inventory.item_quantity
+                FROM Inventory
+                JOIN Item ON Item.item_id = Inventory.item_id
+                JOIN ItemClass ON ItemClass.item_id = Item.item_id
+                JOIN Class ON Class.class_id = ItemClass.class_id
+                WHERE Inventory.location_id = ? AND Item.item_name LIKE ?
+            `;
+            conn.query(query, [location_id, `%${nameLike}%`], (err, res, fields) => {
+                if (err) { return reject(err); }
+                return resolve(res);
+            });
+        });
+    } else {
+        return new Promise((resolve, reject) => {
+            //location -> inventory -> items 
+            const query = `
+            SELECT 
+                Item.*, 
+                ItemClass.*, 
+                Class.*,
+                Inventory.item_quantity
+            FROM Inventory
+            JOIN Item ON Item.item_id = Inventory.item_id
+            JOIN ItemClass ON ItemClass.item_id = Item.item_id
+            JOIN Class ON Class.class_id = ItemClass.class_id
+            WHERE Inventory.location_id = ?
+        `; //this selects unique items 
+            conn.query(query, [location_id], (err, res, fields) => {
+                if (err) { return reject(err); }
+                return resolve(res);
+            });
+        });
+    }
+
+}
+
+
+
+
+
+data.getItemByArtEan = (number) => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT 
+    Item.*, 
+    ItemClass.*, 
+    Class.*,
+    Inventory.item_quantity
+    FROM Inventory
+    JOIN Item ON Item.item_id = Inventory.item_id
+    JOIN ItemClass ON ItemClass.item_id = Item.item_id
+    JOIN Class ON Class.class_id = ItemClass.class_id
+    WHERE Inventory.item_id = (
+        SELECT item_id 
+        FROM Item 
+        WHERE item_article_number = ? OR item_barcode = ?
+        LIMIT 1
+    )`;
+
+        conn.query(query,
+            [number, number], (err, res, fields) => {
             if (err) { return reject(err); }
             return resolve(res);
         });
@@ -126,6 +246,18 @@ data.createClass = (class_name, class_position) => {
         });
     });
 }
+
+
+data.getAllClassesNames = (location_id) => {
+    return new Promise((resolve, reject) => {
+        conn.query('SELECT * FROM Class JOIN ClassLocation ON Class.class_id = ClassLocation.class_id WHERE ClassLocation.location_id = ?',
+            [location_id], (err, res) => {
+                if (err) return reject(err);
+                resolve(res);
+            });
+    });
+}
+
 
 data.updateClass = (class_id, class_name, class_position) => {
     if (class_name && class_position) {
@@ -216,70 +348,70 @@ data.createItem = (arr) => {
 }
 
 //returns all the classes of an item
-data.getItemClasses=(item_id) => {
+data.getItemClasses = (item_id) => {
     return new Promise((resolve, reject) => {
-        conn.query('SELECT * FROM ItemClass WHERE item_id=?',[item_id], (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
+        conn.query('SELECT * FROM ItemClass WHERE item_id=?', [item_id], (err, res) => {
+            if (err) return reject(err);
+            resolve(res);
+        });
     });
 }
 
-data.getItemLocations=(item_id)=>{
+data.getItemLocations = (item_id) => {
     return new Promise((resolve, reject) => {
-        conn.query('SELECT * FROM Inventory WHERE item_id=?',[item_id], (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
+        conn.query('SELECT * FROM Inventory WHERE item_id=?', [item_id], (err, res) => {
+            if (err) return reject(err);
+            resolve(res);
+        });
     });
 }
 
-data.itemClass=(item_id,class_id) => {
+data.itemClass = (item_id, class_id) => {
     return new Promise((resolve, reject) => {
-        conn.query('INSERT INTO ItemClass (item_id, class_id) VALUES (?,?)',[item_id, class_id], (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
+        conn.query('INSERT INTO ItemClass (item_id, class_id) VALUES (?,?)', [item_id, class_id], (err, res) => {
+            if (err) return reject(err);
+            resolve(res);
+        });
     });
 }
 
 data.deleteItemClass = (item_id, class_id) => {
     return new Promise((resolve, reject) => {
         conn.query('DELETE FROM ItemClass WHERE item_id = ? AND class_id = ?', [item_id, class_id], (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            }
+            if (err) return reject(err);
+            resolve(res);
+        }
         );
     });
 }
 
-data.itemInventory=(location_id, item_id, item_quantity, inventory_alert_point)=>{
-    arr=[location_id, item_id, item_quantity, inventory_alert_point];
+data.itemInventory = (location_id, item_id, item_quantity, inventory_alert_point) => {
+    arr = [location_id, item_id, item_quantity, inventory_alert_point];
     return new Promise((resolve, reject) => {
-        conn.query('INSERT INTO Inventory (location_id, item_id, item_quantity, inventory_alert_point) VALUES (?,?,?,?)',arr, (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
+        conn.query('INSERT INTO Inventory (location_id, item_id, item_quantity, inventory_alert_point) VALUES (?,?,?,?)', arr, (err, res) => {
+            if (err) return reject(err);
+            resolve(res);
+        });
     });
 }
 
 // item_id location_id operation_quantity 
-data.restockInventory=(arr)=>{
+data.restockInventory = (arr) => {
     return new Promise((resolve, reject) => {
         //UPDATE Inventory SET item_quantity = item_quantity + ? WHERE item_id = ? AND location_id = ?;
-        conn.query('UPDATE Inventory SET item_quantity = item_quantity + ? WHERE item_id = ? AND location_id = ?',arr, (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
+        conn.query('UPDATE Inventory SET item_quantity = item_quantity + ? WHERE item_id = ? AND location_id = ?', arr, (err, res) => {
+            if (err) return reject(err);
+            resolve(res);
+        });
     });
 }
-data.sellInventory=(arr)=>{
+data.sellInventory = (arr) => {
     return new Promise((resolve, reject) => {
         //UPDATE Inventory SET item_quantity = item_quantity + ? WHERE item_id = ? AND location_id = ?;
-        conn.query('UPDATE Inventory SET item_quantity = GREATEST(item_quantity - ?, 0) WHERE item_id = ? AND location_id = ?',arr, (err, res) => {
-                if (err) return reject(err);
-                resolve(res);
-            });
+        conn.query('UPDATE Inventory SET item_quantity = GREATEST(item_quantity - ?, 0) WHERE item_id = ? AND location_id = ?', arr, (err, res) => {
+            if (err) return reject(err);
+            resolve(res);
+        });
     });
 }
 
@@ -305,12 +437,12 @@ data.getItem = (item_id) => {
 data.updateItem = (arr) => {
     return new Promise((resolve, reject) => {
         conn.query(
-          'UPDATE Item SET item_article_number = ?, item_barcode = ?, item_name = ?, item_price = ?, item_picture = ?, item_dimensions = ?, item_description = ? WHERE item_id = ?',
-          arr,
-          (err, res) => {
-            if (err) return reject(err);
-            resolve(res);
-          }
+            'UPDATE Item SET item_article_number = ?, item_barcode = ?, item_name = ?, item_price = ?, item_picture = ?, item_dimensions = ?, item_description = ? WHERE item_id = ?',
+            arr,
+            (err, res) => {
+                if (err) return reject(err);
+                resolve(res);
+            }
         );
     });
 }
@@ -328,18 +460,39 @@ data.getAllItems = () => {
 //Opperation Log related functions ----------------------------------------------------------------------------------------------------
 
 //takes user_id, item_id, new_class_id, old_class_id,operation_type,operation_quantity
-data.createOppLog=(arr)=>{
+data.createOppLog = (arr) => {
     return new Promise((resolve, reject) => {
         conn.query("INSERT INTO OperationLog (user_id, item_id, new_class_id, old_class_id,operation_type,operation_quantity) VALUES (?,?,?,?,?,?)",
-            arr,(err, res, fields) => {
-            if (err) { return reject(err); }
-            return resolve(res);
-        });
+            arr, (err, res, fields) => {
+                if (err) { return reject(err); }
+                return resolve(res);
+            });
     });
 }
 
 
+data.getAllOppLogs = () => {
+    return new Promise((resolve, reject) => {
+        const query = `SELECT
+    ol.*,
+    oldClass.class_name AS old_class_name,
+    newClass.class_name AS new_class_name,
+    u.user_name AS user_name,
+    i.item_name AS item_name,
+    i.item_picture
+    FROM OperationLog ol
+    LEFT JOIN Class oldClass ON ol.old_class_id = oldClass.class_id
+    LEFT JOIN Class newClass ON ol.new_class_id = newClass.class_id
+    LEFT JOIN User u ON ol.user_id = u.user_id
+    LEFT JOIN Item i ON ol.item_id = i.item_id
+    ORDER BY ol.operation_date DESC`;  
 
+        conn.query(query, (err, res, fields) => {
+            if (err) { return reject(err); }
+            return resolve(res);
+        });
+    });
+}  
 
 
 

@@ -1,0 +1,138 @@
+.history {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    align-items: center;
+    position: relative;
+    padding: 15px;
+    gap: 15px; 
+    box-sizing: border-box; 
+}
+
+.historyOneTab {
+    border: 2px solid #333;
+    border-radius: 20px;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+
+    background-color: white;
+
+    width: calc(100% - 30px); /* fixed invalid syntax */
+    height: 200px;
+    position: relative;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.historyOneTab .historyImageContainer {
+    box-sizing: border-box;
+    background-color: white;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    border: inherit;
+    object-fit: contain;
+    border-radius: 15px;
+}
+
+.historyOneTab .historyImageContainer img{
+   width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit:contain;
+}
+
+/*
+.display .displayButton .itemPicture img {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    object-fit:contain;
+}
+    */
+
+
+.historyOneTab .historyNotImageContainer {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: stretch; 
+    background-color: inherit;
+    margin-left: 10px;
+    padding: 10px; 
+    box-sizing: border-box;
+}
+
+.historyOneTab .historyTabHeader {
+    margin: 0 0 0 0;
+    padding: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-transform: capitalize;
+    
+}
+
+.historyOneTab .historyData {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start; 
+    gap: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: calc(100% - 35px);
+}
+
+.historyOneTab .hitroyUserAndItemDetails {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: black;
+    width: 50%; 
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.historyOneTab .historyOppDetails {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: black;
+    width: 50%;
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.hitroyUserAndItemDetails p:nth-child(1)::before {
+    content: "Item Name: ";
+    font-weight: 700;
+}
+
+.hitroyUserAndItemDetails p:nth-child(2)::before {
+    content: "User: ";
+    font-weight: 700;
+}
+
+.hitroyUserAndItemDetails p:nth-child(3)::before {
+    content: "Time: ";
+    font-weight: 700;
+}
+
+.historyOppDetails p:nth-child(1)::before {
+    content: "Old Class: ";
+    font-weight: 700;
+}
+
+.historyOppDetails p:nth-child(2)::before {
+    content: "New Class: ";
+    font-weight: 700;
+}
+
+.historyOppDetails p:nth-child(3)::before {
+    content: "Operation Quantity: ";
+    font-weight: 700;
+}

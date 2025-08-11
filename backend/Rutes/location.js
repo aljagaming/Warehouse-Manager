@@ -95,5 +95,21 @@ location.post("/getLocation", async (req,res,next)=>{
 })
 
 
+location.post("/getAllItemsInLocation", async (req, res) => {
+    //let location_id = req.session.location_id;
+    let location_id=1;
+    let class_id= req.body.class_id;
+    let nameLike = req.body.nameLike;
+    try {
+        const result = await DB.getAllItemsInLocation(location_id, class_id, nameLike);
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({});
+    }
+
+});
+
+
 
 module.exports = location;

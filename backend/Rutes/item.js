@@ -1,25 +1,45 @@
+const path = require('path');
 const express = require("express");
 const DB = require('../DB/DBconn.js');
 const item = express.Router();
 
 const multer = require('multer');
 
-let upload = multer({ dest: 'uploads/' });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + ext);
+  }
+});
+
+const upload = multer({ storage: storage });
+
+
 
 
 item.post("/create", upload.single('item_picture'), async (req, res) => {
 
 
-    let user_id = req.body.user_id;
+    let user_id = req.session.user_id;
+
     let item_quantity = req.body.item_quantity;
     let inventory_alert_point = req.body.inventory_alert_point;
     let class_id = req.body.class_id;
+    let item_article_number=req.body.item_article_number;
+    let item_barcode=req.body.item_barcode;
+    let item_name=req.body.item_name;
+    let item_price=req.body.item_price;
+    let item_description=req.body.item_description;
+
 
     // Check must have attributes
-    if (!user_id || !class_id || !req.body.item_article_number
-        || !req.body.item_barcode
-        || !req.body.item_name || !req.body.item_price ||
-        !req.body.item_description) {
+    if (!user_id || !class_id || !item_article_number
+        || !item_barcode
+        || !item_name| !item_price ||
+        !item_description) {
 
         return res.json({
             success: false,
@@ -390,10 +410,11 @@ function cleanUpdate(a, b) {
 //-------------------------------------------------------------------------------------------------
 
 item.post("/restock", async (req, res) => {
-    let user_id = req.body.user_id;
+
+    let user_id = req.session.user_id;
     let item_id = req.body.item_id;
-    let operation_quantity = req.body.operation_quantity;
     let class_id = req.body.class_id;
+    let operation_quantity = req.body.operation_quantity;
 
     if (!user_id || !item_id || !class_id || !operation_quantity || operation_quantity <= 0) {
         return res.json({
@@ -470,10 +491,10 @@ item.post("/restock", async (req, res) => {
 //-------------------------------------------------------------------------------------------------
 
 item.post("/sell", async (req, res) => {
-    let user_id = req.body.user_id;
+    let user_id = req.session.user_id;
     let item_id = req.body.item_id;
-    let operation_quantity = req.body.operation_quantity;
     let class_id = req.body.class_id;
+    let operation_quantity = req.body.operation_quantity;
 
     if (!user_id || !item_id || !class_id || !operation_quantity || operation_quantity <= 0) {
         return res.json({
@@ -640,7 +661,52 @@ item.post("/move", async (req, res) => {
         console.error(error);
         return res.sendStatus(500);
     }
+});
+
+
+
+item.get("/getItemArtEan", async (req, res) => {
+    let number = req.query.number;
+    if (!number || number <= 0) {
+        return res.json({
+            success: false,
+            msg: "Item number is missing"
+        });
+    }
+    try {
+        let item = await DB.getItemByArtEan(number);
+        if (!item || item.length === 0) {
+            return res.json({
+                success: false,
+                msg: `No item with such id! `
+            });
+        }
+        res.json(item[0]);
+
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
 })
+
+
+
+item.get("/allOppLogs", async (req, res) => {
+
+    try {
+        let allLogs = await DB.getAllOppLogs();
+        if (!allLogs || allLogs.length === 0) {
+            return res.json({
+                success: false,
+                msg: "No operation logs found"
+            });
+        }
+        res.json(allLogs);
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
+}); 
 
 
 

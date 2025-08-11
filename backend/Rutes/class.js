@@ -4,6 +4,8 @@ const myClass = express.Router();
 
 
 
+
+
 myClass.post("/create", async (req, res) => {
     let location_id= req.body.location_id;
     let class_name=req.body.class_name;
@@ -159,6 +161,27 @@ myClass.post("/update", async (req, res) => {
     }
 });
 
+
+
+
+myClass.get("/getAllClassesNames", async (req, res) => {
+    let location_id = req.session.location_id ; // Default to 1 for now user can only view location id 1 
+    //location_id=1
+    try {
+        let classes = await DB.getAllClassesNames(location_id);
+        if (classes && classes.length > 0) {
+            return res.json(classes)
+        } else {
+            return res.json({
+                success: false,
+                msg: "No classes found for this location."
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
 
 /*
 myClass.get("/all", async (req,res,next)=>{
