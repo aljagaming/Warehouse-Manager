@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../style/forms.css';
 
@@ -19,7 +19,24 @@ function Create({ onClose }) {
   const [itemDimensions, setItemDimensions] = useState('');
   const [itemQuantity, setItemQuantity] = useState('');
   const [inventoryAlertPoint, setInventoryAlertPoint] = useState('');
-  const [classId, setClassId] = useState('');
+
+  const [classId, setClassId] = useState("");
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    
+    const fetchClasses = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/class/getAllClassesNames`);
+        const data = await res.json(); 
+        setClasses(data); 
+      } catch (err) {
+        console.error("Error fetching classes:", err);
+      }
+    };
+    fetchClasses();
+  }, []);
+
 
   async function handleCreate(e) {
     e.preventDefault();
@@ -39,23 +56,11 @@ function Create({ onClose }) {
       formData.append('item_quantity', itemQuantity);
       formData.append('inventory_alert_point', inventoryAlertPoint);
       formData.append('class_id', classId);
-      
+
       console.log("-----------------------------------------------------------------------")
       for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-
-      console.log(itemArticleNumber);
-      console.log(itemBarcode);
-      console.log(itemName);
-      console.log(itemDescription);
-      console.log(itemPicture);
-      console.log(itemPrice);
-      console.log(itemDimensions);
-      console.log(inventoryAlertPoint);
-      console.log(classId);
-
+        console.log(key, value);
+      }
 
       const response = await axios.post(
         `${REACT_APP_API_URL}/item/create`,
@@ -169,15 +174,23 @@ function Create({ onClose }) {
           onChange={(e) => setInventoryAlertPoint(e.target.value)}
         />
 
-        <label htmlFor="classId">Class ID:</label>
-        <input
+
+        <label htmlFor="classId">Class Name:</label>
+        <select
           id="classId"
-          type="text"
           className="generalInput"
           value={classId}
           onChange={(e) => setClassId(e.target.value)}
           required
-        />
+        >
+          <option value="">-- Select class --</option>
+          {classes.map((cls) => (
+            <option key={cls.class_id} value={cls.class_id}>
+              {cls.class_name}, {cls.location_name}
+            </option>
+          ))}
+        </select>
+
 
         <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
           <button type="submit" className="generalSubmitButton">

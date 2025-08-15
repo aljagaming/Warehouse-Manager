@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sell from './formSell.js';
 import Restock from './formRestock.js';
-import Create from './formCreate.js'; 
+import Create from './formCreate.js';
+import CreateClass from './formCreateClass.js';
+import DeleteClass from './formDeleteClass.js';
 import '../style/costumer.css';
+import axios from 'axios';
 
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
@@ -13,6 +16,8 @@ function ItemDetail() {
     const [showSellForm, setShowSellForm] = useState(false);
     const [showRestockForm, setShowRestockForm] = useState(false);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const [showCreateClassForm, setShowCreateClassForm] = useState(false);
+    const [showDeleteClassForm, setShowDeleteClassForm] = useState(false);
 
     const location = useLocation();
     const item = location.state?.item;
@@ -22,7 +27,7 @@ function ItemDetail() {
     //console.log("Item detail ", item);
     //console.log("User detai ", user);
 
-  
+
     const employeeDetails = user.user_role === 'manager' || user.user_role === 'employee';
 
 
@@ -30,8 +35,34 @@ function ItemDetail() {
         setShowCreateForm(true);
     }
 
-    function handleDeleteItem() {
-        
+    async function handleDeleteItem() {
+
+        try {
+            const response = await axios.post(`${REACT_APP_API_URL}/item/delete`, {
+                item_id: item.item_id,
+            }, { withCredentials: true });
+
+            
+            console.log(response.data.success);
+
+
+            if (response.data.success) {
+                window.history.back();
+                console.log("Deleted item!");
+            } else {
+                console.log("Could not delete item!");
+            }
+        } catch (error) {
+            console.error("Error deleting item:", error);
+        }
+    }
+
+    async function handleCreateClass(){
+        setShowCreateClassForm(true);
+    }
+
+    function handleDeleteClass(){
+       setShowDeleteClassForm(true);
     }
 
     function handleSell() {
@@ -56,8 +87,8 @@ function ItemDetail() {
                     <div className='employeeMenue'>
                         <button className="employeeMenuButton" onClick={handleCreateItem}>Create New Item</button>
                         <button className="employeeMenuButton" onClick={handleDeleteItem}>Delete Item</button>
-                        <button className="employeeMenuButton" >Create New Class</button>
-                        <button className="employeeMenuButton" >Delete Class</button>
+                        <button className="employeeMenuButton" onClick={handleCreateClass}>Create New Class</button>
+                        <button className="employeeMenuButton" onClick={handleDeleteClass}>Delete Class</button>
                         <button className="employeeMenuButton" onClick={handleSell}>Sell</button>
                         <button className="employeeMenuButton" onClick={handleRestock}>Restock</button>
                         <button className="employeeMenuButton">Move </button>
@@ -66,8 +97,17 @@ function ItemDetail() {
                 )}
 
                 {showCreateForm && //create Form if conditional rendering true
-                <Create  onClose={() => setShowCreateForm(false)} />
-                } 
+                    <Create onClose={() => setShowCreateForm(false)} />
+                }
+
+                {showCreateClassForm && //create Form if conditional rendering true
+                    <CreateClass onClose={() => setShowCreateClassForm(false)} />
+                }
+
+                {showDeleteClassForm && 
+                    <DeleteClass onClose={() => setShowDeleteClassForm(false)} />
+                }
+
 
                 {showSellForm && ( //sell Form if conditional rendering true
                     <Sell

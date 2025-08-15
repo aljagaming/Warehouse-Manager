@@ -5,9 +5,8 @@ import React, { useEffect, useState } from 'react';
 
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
 
-
+//This component calls API and maps all OppLogs to History display 
 function MakeHistory() {
-    // This component displays a single history tab
 
     const [logs, setLogs] = useState([]);
 
@@ -20,8 +19,6 @@ function MakeHistory() {
                 if (response && response.data && response.data.length > 0) {
                     setLogs(response.data);
 
-                    console.log("From response", response);
-                    console.log("From logs set ", logs);
                 } else {
                     console.log("No logs found!");
                 }
@@ -30,9 +27,7 @@ function MakeHistory() {
             }
         }
         fetchLogs();
-        
     }, []);
-
 
     return (
         <div className='history'>

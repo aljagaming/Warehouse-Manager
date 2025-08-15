@@ -35,6 +35,7 @@ item.post("/create", upload.single('item_picture'), async (req, res) => {
     let item_description=req.body.item_description;
 
 
+
     // Check must have attributes
     if (!user_id || !class_id || !item_article_number
         || !item_barcode
@@ -81,6 +82,8 @@ item.post("/create", upload.single('item_picture'), async (req, res) => {
 
         //get Location of that class
         const location_id = classExists[0].location_id;
+
+        
 
         if (!location_id) {
             return res.json({
@@ -149,7 +152,7 @@ item.post("/create", upload.single('item_picture'), async (req, res) => {
 });
 
 item.post("/delete", async (req, res) => {
-    let { item_id } = req.body;
+    let  item_id = req.body.item_id;
     try {
         let deleteStat = await DB.deleteItem(item_id);
         if (deleteStat.affectedRows > 0) {

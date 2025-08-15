@@ -110,6 +110,32 @@ myClass.post("/getItems", async (req, res) => {
 });
 
 
+myClass.post("/isEmpty", async (req, res) => {
+    const class_id = req.body.class_id;
+
+    try {
+        const items = await DB.classGetItemsIds(class_id);
+
+        if (items && items.length > 0) {
+           
+            res.json({
+                isEmpty: false,
+            });
+
+        } else {
+
+            res.json({
+                isEmpty: true,
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+    }
+});
+
+
 myClass.post("/update", async (req, res) => {
     let class_id=req.body.class_id;
     let class_name=req.body.class_name;
@@ -183,17 +209,7 @@ myClass.get("/getAllClassesNames", async (req, res) => {
     }
 });
 
-/*
-myClass.get("/all", async (req,res,next)=>{
-    try {
-        const result = await DB.getAllLocation();
-        res.json(result);
-    } catch (err) {
-        console.error( err);
-        res.status(500).json({});
-    }
-})
-*/
+    
 
 
 module.exports = myClass;

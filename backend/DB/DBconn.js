@@ -133,7 +133,8 @@ data.getAllItemsInLocation = (location_id, class_id, nameLike) => {
                 JOIN Item ON Item.item_id = Inventory.item_id
                 JOIN ItemClass ON ItemClass.item_id = Item.item_id
                 JOIN Class ON Class.class_id = ItemClass.class_id
-                WHERE Inventory.location_id = ? AND Class.class_id = ? AND Item.item_name LIKE ?
+                WHERE Inventory.location_id = ? AND Class.class_id = ?
+                AND Item.item_name LIKE ?
             `;
             conn.query(query, [location_id, class_id, `%${nameLike}%`], (err, res, fields) => {
                 if (err) { return reject(err); }
@@ -249,14 +250,37 @@ data.createClass = (class_name, class_position) => {
 
 
 data.getAllClassesNames = (location_id) => {
+    if (!location_id || location_id==undefined) {
+
+        return new Promise((resolve, reject) => {
+            conn.query(
+                `SELECT *
+                FROM Class
+                JOIN ClassLocation ON Class.class_id = ClassLocation.class_id
+                JOIN Location ON ClassLocation.location_id = Location.location_id;`,
+                (err, res) => {
+                    if (err) return reject(err);
+                    resolve(res);
+                }
+            );
+        });
+    }
+
     return new Promise((resolve, reject) => {
-        conn.query('SELECT * FROM Class JOIN ClassLocation ON Class.class_id = ClassLocation.class_id WHERE ClassLocation.location_id = ?',
-            [location_id], (err, res) => {
+        conn.query(
+            `SELECT *
+                FROM Class
+                JOIN ClassLocation ON Class.class_id = ClassLocation.class_id
+                JOIN Location ON ClassLocation.location_id = Location.location_id WHERE ClassLocation.location_id = ?`,
+            [location_id],
+            (err, res) => {
                 if (err) return reject(err);
                 resolve(res);
-            });
+            }
+        );
     });
 }
+
 
 
 data.updateClass = (class_id, class_name, class_position) => {
