@@ -33,10 +33,7 @@ function Login() {
       // Handle login success/failure here
       if (response.data.success) {
 
-        const role = response.data.user_role;  
-        //console.log("User data from LOGIN:", user);
 
-        // Navigate based on role
         if (response.data.user_role === 'costumer') { //its 
           navigate('/costumer', { state: {user:response.data} }); //pass the user state
         } else {

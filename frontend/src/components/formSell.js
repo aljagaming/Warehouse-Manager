@@ -16,7 +16,7 @@ function Sell({ user, item_id, class_id, onClose }) {
      console.log("Trying to sell: ");
 
     try {
-      const response = await axios.post(`${REACT_APP_API_URL}/item/sell`, {
+      await axios.post(`${REACT_APP_API_URL}/item/sell`, {
         item_id: item_id,
         class_id: class_id,
         operation_quantity: operationQuantity,
